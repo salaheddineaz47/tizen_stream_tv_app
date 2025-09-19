@@ -36,7 +36,7 @@ export function ContentPoster({
 
         {/* Overlay on hover/focus */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <Play className="w-16 h-16 text-white drop-shadow-lg" />
+          <Play className="w-16 h-16 text-white drop-shadow-lg mt-[-100px]" />
         </div>
       </div>
 

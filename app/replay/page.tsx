@@ -12,14 +12,15 @@ export default function ReplayPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Create navigation grid for replay content (3 columns)
+    // Create navigation grid for replay content 
     const grid = []
     grid.push(["back-button"]) // Header row
 
-    // Content rows (3 items per row)
-    for (let i = 0; i < mockReplayContent.length; i += 3) {
+    // Content rows 
+    const MOVIES_PER_ROW = 4;
+    for (let i = 0; i < mockReplayContent.length; i += MOVIES_PER_ROW) {
       const row = []
-      for (let j = 0; j < 3 && i + j < mockReplayContent.length; j++) {
+      for (let j = 0; j < MOVIES_PER_ROW && i + j < mockReplayContent.length; j++) {
         row.push(`replay-${i + j}`)
       }
       grid.push(row)
@@ -38,7 +39,7 @@ export default function ReplayPage() {
 
   return (
     <CategoryPageLayout title="Replay">
-      <div className="grid grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="grid grid-cols-4 gap-8 max-w-7xl mx-auto">
         {mockReplayContent.map((content, index) => (
           <ContentPoster key={content.id} content={content} onSelect={handleReplaySelect} navId={`replay-${index}`} />
         ))}

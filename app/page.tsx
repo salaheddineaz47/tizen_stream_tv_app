@@ -37,7 +37,7 @@ export default function HomePage() {
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-8">
-        <div className="grid grid-cols-4 gap-8 max-w-6xl">
+        <div className="grid grid-cols-4 gap-14 max-w-6xl">
           <CategoryCard
             id="live-tv"
             title="Live TV"

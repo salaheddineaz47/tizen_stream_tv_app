@@ -207,7 +207,7 @@ export const mockTVChannels: TVChannel[] = [
     logo: "/channel-bbc-one.png",
     genre: "General",
     streamUrl:
-      "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "https://live1.mediadesk.al/oranews.m3u8",
     isLive: true,
   },
   {

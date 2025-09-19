@@ -13,6 +13,7 @@ interface VideoPlayerProps {
 
 export function VideoPlayer({ streamUrl, title, onBack }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const hlsRef = useRef<any>(null) // Use ref for HLS instance
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const [volume, setVolume] = useState(1)
@@ -20,7 +21,6 @@ export function VideoPlayer({ streamUrl, title, onBack }: VideoPlayerProps) {
   const [duration, setDuration] = useState(0)
   const [showControls, setShowControls] = useState(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const [hlsInstance, setHlsInstance] = useState<any>(null)
 
   // Control refs for navigation
   const backRef = useTVNavigation({
@@ -78,67 +78,180 @@ export function VideoPlayer({ streamUrl, title, onBack }: VideoPlayerProps) {
     }
   }, [])
 
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
+  // useEffect(() => {
+  //   const video = videoRef.current;
+  //   if (!video) return;
 
-    // Initialize HLS.js for .m3u8 streams
-    const initializeHLS = async () => {
-      if (streamUrl.includes(".m3u8")) {
-        try {
-          const Hls = (await import("hls.js")).default
-          if (Hls.isSupported()) {
-            const hls = new Hls({
-              enableWorker: true,
-              lowLatencyMode: true,
-            })
-            hls.loadSource(streamUrl)
-            hls.attachMedia(video)
-            setHlsInstance(hls)
+  //   // Always clean up previous HLS instance before creating a new one
+  //   if (hlsRef.current) {
+  //     hlsRef.current.destroy();
+  //     hlsRef.current = null;
+  //   }
 
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-              console.log("HLS manifest loaded")
-            })
+  //   let usingHls = false;
+  //   let cleanupHls = false;
 
-            hls.on(Hls.Events.ERROR, (event, data) => {
-              console.error("HLS error:", data)
-            })
-          } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-            // Native HLS support (Safari)
-            video.src = streamUrl
-          }
-        } catch (error) {
-          console.error("Failed to load HLS.js:", error)
-          video.src = streamUrl // Fallback to native video
-        }
-      } else {
-        video.src = streamUrl
-      }
+  //   if (streamUrl.includes(".m3u8")) {
+  //     usingHls = true;
+  //     import("hls.js").then(({ default: Hls }) => {
+  //       if (!video) return;
+  //       if (Hls.isSupported()) {
+  //         // Defensive: destroy any previous instance
+  //         if (hlsRef.current) {
+  //           hlsRef.current.destroy();
+  //           hlsRef.current = null;
+  //         }
+  //         const hls = new Hls({
+  //           enableWorker: true,
+  //           lowLatencyMode: true,
+  //         });
+  //         hlsRef.current = hls;
+  //         hls.attachMedia(video);
+  //         hls.loadSource(streamUrl);
+
+  //         hls.on(Hls.Events.MANIFEST_PARSED, () => {
+  //           console.log("HLS manifest loaded");
+  //         //  Autoplay once manifest is parsed
+  //         video.play().catch(() => {
+  //           // Autoplay might be blocked → mute and retry
+  //           video.muted = true;
+  //           video.play().catch((err) => console.warn("Autoplay failed:", err));
+  //         });
+  //         });
+  //         hls.on(Hls.Events.ERROR, (event, data) => {
+  //           console.error("HLS error:", data);
+  //         });
+  //         cleanupHls = true;
+  //       } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+  //         // Native HLS support (Safari)
+  //         video.src = streamUrl;
+
+  //         video.play().catch(() => {
+  //         video.muted = true;
+  //         video.play().catch((err) => console.warn("Autoplay failed:", err));
+  //       });
+
+  //       } else {
+  //         // Not supported, fallback
+  //         video.src = streamUrl;
+  //       }
+  //     }).catch((error) => {
+  //       console.error("Failed to load HLS.js:", error);
+  //       if (video) video.src = streamUrl; // Fallback to native video
+  //     });
+  //   } else {
+  //     // Not HLS, just set src
+  //     video.src = streamUrl;
+  //   }
+
+  //   // Video event listeners
+  //   const handleTimeUpdate = () => setCurrentTime(video.currentTime);
+  //   const handleDurationChange = () => setDuration(video.duration);
+  //   const handlePlay = () => setIsPlaying(true);
+  //   const handlePause = () => setIsPlaying(false);
+
+  //   video.addEventListener("timeupdate", handleTimeUpdate);
+  //   video.addEventListener("durationchange", handleDurationChange);
+  //   video.addEventListener("play", handlePlay);
+  //   video.addEventListener("pause", handlePause);
+
+  //   return () => {
+  //     // Always clean up HLS instance
+  //     if (hlsRef.current) {
+  //       hlsRef.current.destroy();
+  //       hlsRef.current = null;
+  //     }
+  //     video.removeEventListener("timeupdate", handleTimeUpdate);
+  //     video.removeEventListener("durationchange", handleDurationChange);
+  //     video.removeEventListener("play", handlePlay);
+  //     video.removeEventListener("pause", handlePause);
+  //     // Remove src to fully reset video element
+  //     video.removeAttribute("src");
+  //     video.load();
+  //   };
+  // }, [streamUrl]);
+
+    useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
     }
 
-    initializeHLS()
+    if (streamUrl.includes(".m3u8")) {
+      import("hls.js").then(({ default: Hls }) => {
+        if (!video) return;
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: true,
+          });
+          hlsRef.current = hls;
+          hls.attachMedia(video);
+          hls.loadSource(streamUrl);
 
-    // Video event listeners
-    const handleTimeUpdate = () => setCurrentTime(video.currentTime)
-    const handleDurationChange = () => setDuration(video.duration)
-    const handlePlay = () => setIsPlaying(true)
-    const handlePause = () => setIsPlaying(false)
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            console.log("HLS manifest loaded");
+            //  Autoplay once manifest is parsed
+            video.play().catch(() => {
+              // Autoplay might be blocked → mute and retry
+              video.muted = true;
+              video.play().catch((err) => console.warn("Autoplay failed:", err));
+            });
+          });
 
-    video.addEventListener("timeupdate", handleTimeUpdate)
-    video.addEventListener("durationchange", handleDurationChange)
-    video.addEventListener("play", handlePlay)
-    video.addEventListener("pause", handlePause)
+          hls.on(Hls.Events.ERROR, (event, data) => {
+            console.error("HLS error:", data);
+          });
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = streamUrl;
+          //  Try autoplay for native HLS
+          video.play().catch(() => {
+            video.muted = true;
+            video.play().catch((err) => console.warn("Autoplay failed:", err));
+          });
+        } else {
+          video.src = streamUrl;
+          video.play().catch(() => {
+            video.muted = true;
+            video.play().catch((err) => console.warn("Autoplay failed:", err));
+          });
+        }
+      });
+    } else {
+      video.src = streamUrl;
+      //  Autoplay for normal video URLs
+      video.play().catch(() => {
+        video.muted = true;
+        video.play().catch((err) => console.warn("Autoplay failed:", err));
+      });
+    }
+
+    const handleTimeUpdate = () => setCurrentTime(video.currentTime);
+    const handleDurationChange = () => setDuration(video.duration);
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    video.addEventListener("durationchange", handleDurationChange);
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
 
     return () => {
-      if (hlsInstance) {
-        hlsInstance.destroy()
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
       }
-      video.removeEventListener("timeupdate", handleTimeUpdate)
-      video.removeEventListener("durationchange", handleDurationChange)
-      video.removeEventListener("play", handlePlay)
-      video.removeEventListener("pause", handlePause)
-    }
-  }, [streamUrl, hlsInstance])
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("durationchange", handleDurationChange);
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
+      video.removeAttribute("src");
+      video.load();
+    };
+  }, [streamUrl]);
 
   function togglePlayPause() {
     const video = videoRef.current
