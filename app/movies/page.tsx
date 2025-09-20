@@ -12,11 +12,11 @@ export default function MoviesPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Create navigation grid for movies (3 columns)
+    // Create navigation grid for movies (4 columns)
     const grid = [];
     grid.push(["back-button"]); // Header row
 
-    // Content rows (3 movies per row)
+    // Content rows (4 movies per row)
     const MOVIES_PER_ROW = 4;
     for (let i = 0; i < mockMovies.length; i += MOVIES_PER_ROW) {
       const row = [];

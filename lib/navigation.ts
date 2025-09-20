@@ -151,9 +151,27 @@ export class TVNavigation {
 
     const [row, col] = pos;
     if (row > 0) {
-      const newId = this.grid[row - 1][col];
-      if (newId && this.items.has(newId)) {
-        this.focus(newId);
+      const targetRow = this.grid[row - 1];
+      let offset = 0;
+      let found = false;
+      while (!found && (col - offset >= 0 || col + offset < targetRow.length)) {
+        if (col - offset >= 0) {
+          const newId = targetRow[col - offset];
+          if (newId && this.items.has(newId)) {
+            this.focus(newId);
+            found = true;
+            break;
+          }
+        }
+        if (offset !== 0 && col + offset < targetRow.length) {
+          const newId = targetRow[col + offset];
+          if (newId && this.items.has(newId)) {
+            this.focus(newId);
+            found = true;
+            break;
+          }
+        }
+        offset++;
       }
     }
   }
@@ -165,9 +183,27 @@ export class TVNavigation {
 
     const [row, col] = pos;
     if (row < this.grid.length - 1) {
-      const newId = this.grid[row + 1][col];
-      if (newId && this.items.has(newId)) {
-        this.focus(newId);
+      const targetRow = this.grid[row + 1];
+      let offset = 0;
+      let found = false;
+      while (!found && (col - offset >= 0 || col + offset < targetRow.length)) {
+        if (col - offset >= 0) {
+          const newId = targetRow[col - offset];
+          if (newId && this.items.has(newId)) {
+            this.focus(newId);
+            found = true;
+            break;
+          }
+        }
+        if (offset !== 0 && col + offset < targetRow.length) {
+          const newId = targetRow[col + offset];
+          if (newId && this.items.has(newId)) {
+            this.focus(newId);
+            found = true;
+            break;
+          }
+        }
+        offset++;
       }
     }
   }

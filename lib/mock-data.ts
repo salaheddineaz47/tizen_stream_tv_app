@@ -198,6 +198,30 @@ export const mockReplayContent: VideoContent[] = [
     streamUrl:
       "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
   },
+  {
+    id: "replay-5",
+    title: "Documentary: Ocean Life",
+    description: "Explore the mysteries of the deep sea.",
+    thumbnail: "/replay-documentary.jpg",
+    duration: "1h 30m",
+    genre: "Documentary",
+    year: 2025,
+    rating: "8.2",
+    streamUrl:
+      "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+  },
+  {
+    id: "replay-6",
+    title: "Documentary: Ocean Life",
+    description: "Explore the mysteries of the deep sea.",
+    thumbnail: "/replay-documentary.jpg",
+    duration: "1h 30m",
+    genre: "Documentary",
+    year: 2025,
+    rating: "8.2",
+    streamUrl:
+      "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+  },
 ];
 
 export const mockTVChannels: TVChannel[] = [
@@ -206,8 +230,7 @@ export const mockTVChannels: TVChannel[] = [
     name: "BBC One",
     logo: "/channel-bbc-one.png",
     genre: "General",
-    streamUrl:
-      "https://live1.mediadesk.al/oranews.m3u8",
+    streamUrl: "https://live1.mediadesk.al/oranews.m3u8",
     isLive: true,
   },
   {

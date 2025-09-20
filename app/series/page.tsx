@@ -12,15 +12,14 @@ export default function SeriesPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Create navigation grid for series (3 columns)
+    // Create navigation grid for series (4 columns)
     const grid = [];
     grid.push(["back-button"]); // Header row
 
-    // Content rows (3 series per row)
-    const MOVIES_PER_ROW = 4;
-    for (let i = 0; i < mockSeries.length; i += MOVIES_PER_ROW) {
+    const ITEMS_PER_ROW = 4;
+    for (let i = 0; i < mockSeries.length; i += ITEMS_PER_ROW) {
       const row = [];
-      for (let j = 0; j < MOVIES_PER_ROW && i + j < mockSeries.length; j++) {
+      for (let j = 0; j < ITEMS_PER_ROW && i + j < mockSeries.length; j++) {
         row.push(`series-${i + j}`);
       }
       grid.push(row);
