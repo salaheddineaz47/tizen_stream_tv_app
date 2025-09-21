@@ -10,9 +10,6 @@ import type { TVChannel } from "@/types/content";
 
 export default function LiveTVPage() {
   const router = useRouter();
-  const [selectedChannelId, setSelectedChannelId] = useState<string | null>(
-    null
-  );
 
   useEffect(() => {
     // Create navigation grid for channels (single column)
@@ -28,8 +25,6 @@ export default function LiveTVPage() {
   }, []);
 
   const handleChannelSelect = (channel: TVChannel) => {
-    setSelectedChannelId(channel.id);
-
     // Navigate to player after a short delay to show selection
     setTimeout(() => {
       const params = new URLSearchParams({
@@ -56,7 +51,6 @@ export default function LiveTVPage() {
               channel={channel}
               onSelect={handleChannelSelect}
               navId={`channel-${index}`}
-              isSelected={selectedChannelId === channel.id}
             />
           ))}
         </div>

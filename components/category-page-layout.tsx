@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { TVLayout } from "@/components/tv-layout";
 import { ArrowLeft } from "lucide-react";
 import { useTVNavigation } from "@/hooks/use-tv-navigation";
+import { BackButton } from "./BackButton";
 
 interface CategoryPageLayoutProps {
   title: string;
@@ -28,14 +29,7 @@ export function CategoryPageLayout({
     <TVLayout backgroundImage="/modern-living-room-with-tv.jpg">
       {/* Header */}
       <header className="flex items-center gap-6 p-8 pt-12">
-        <button
-          ref={backRef}
-          className="flex items-center gap-3 text-white hover:text-primary transition-colors focus:text-primary focus:scale-110 glassmorphism px-4 py-2 rounded-xl"
-          tabIndex={-1}
-        >
-          <ArrowLeft className="w-6 h-6" />
-          <span className="text-lg font-medium">Back</span>
-        </button>
+        <BackButton ref={backRef} />
         <h1 className="text-4xl font-bold text-white">{title}</h1>
       </header>
 

@@ -20,6 +20,71 @@ export class TVNavigation {
   private setupKeyListeners() {
     if (typeof window !== "undefined" && typeof document !== "undefined") {
       document.addEventListener("keydown", (e) => {
+        // If focus is in a text input, textarea, or contenteditable, ignore navigation keys except arrows and Enter
+        const active = document.activeElement;
+        const isTextInput =
+          active &&
+          ((active.tagName === "INPUT" &&
+            (active as HTMLInputElement).type === "text") ||
+            active.tagName === "TEXTAREA" ||
+            (active as HTMLElement).isContentEditable);
+
+        // Allow typing, editing, and backspace in text fields
+        if (isTextInput) {
+          return;
+        }
+        // Only allow navigation with arrows/Enter if input is empty
+        if (
+          ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter"].includes(
+            e.key
+          )
+        ) {
+          // If input/textarea has value, do not move focus
+          if (
+            (active.tagName === "INPUT" &&
+              (active as HTMLInputElement).value.length > 0) ||
+            (active.tagName === "TEXTAREA" &&
+              (active as HTMLTextAreaElement).value.length > 0) ||
+            (active as HTMLElement).isContentEditable
+          ) {
+            // Do not move focus away, let browser handle
+            return;
+          }
+          // Otherwise, allow navigation
+        } else {
+          // Ignore all other keys (including Backspace)
+          return;
+        }
+
+        // if (isTextInput) {
+        //   // Only allow navigation with arrows/Enter if input is empty
+        //   if (
+        //     [
+        //       "ArrowUp",
+        //       "ArrowDown",
+        //       "ArrowLeft",
+        //       "ArrowRight",
+        //       "Enter",
+        //     ].includes(e.key)
+        //   ) {
+        //     // If input/textarea has value, do not move focus
+        //     if (
+        //       (active.tagName === "INPUT" &&
+        //         (active as HTMLInputElement).value.length > 0) ||
+        //       (active.tagName === "TEXTAREA" &&
+        //         (active as HTMLTextAreaElement).value.length > 0) ||
+        //       (active as HTMLElement).isContentEditable
+        //     ) {
+        //       // Do not move focus away, let browser handle
+        //       return;
+        //     }
+        //     // Otherwise, allow navigation
+        //   } else {
+        //     // Ignore all other keys (including Backspace)
+        //     return;
+        //   }
+        // }
+
         // Handle number keys for direct navigation (useful for channel selection)
         if (e.key >= "0" && e.key <= "9") {
           this.handleNumberKey(e.key);
@@ -49,9 +114,15 @@ export class TVNavigation {
             this.selectCurrent();
             break;
           case "Escape":
-          case "Backspace":
             e.preventDefault();
             this.goBack();
+            break;
+          case "Backspace":
+            // Only go back if not in a text input
+            if (!isTextInput) {
+              e.preventDefault();
+              this.goBack();
+            }
             break;
           case "Home":
             e.preventDefault();

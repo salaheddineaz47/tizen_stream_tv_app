@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useSearchParams, useRouter } from "next/navigation"
-import { VideoPlayer } from "@/components/video-player"
-import { Suspense } from "react"
+import { useSearchParams, useRouter } from "next/navigation";
+import { VideoPlayer } from "@/components/video-player";
+import { Suspense } from "react";
 
 function PlayerContent() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  const streamUrl = searchParams.get("url") || ""
-  const title = searchParams.get("title") || "Video Player"
+  const streamUrl = searchParams.get("url") || "";
+  const title = searchParams.get("title") || "Video Player";
 
   const handleBack = () => {
-    router.back()
-  }
+    router.back();
+  };
 
   if (!streamUrl) {
     return (
@@ -28,10 +28,12 @@ function PlayerContent() {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
-  return <VideoPlayer streamUrl={streamUrl} title={title} onBack={handleBack} />
+  return (
+    <VideoPlayer streamUrl={streamUrl} title={title} onBack={handleBack} />
+  );
 }
 
 export default function PlayerPage() {
@@ -45,5 +47,5 @@ export default function PlayerPage() {
     >
       <PlayerContent />
     </Suspense>
-  )
+  );
 }
